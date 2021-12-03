@@ -1,16 +1,18 @@
 ﻿#include <iostream>
+#include <cstring>
+#include <algorithm>
 
 using namespace std;
 
-bool CanTransform(const string start,const string end)
+bool CanTransform(const string start, const string end)
 {
     int Rs = 0, Re = 0, Ls = 0, Le = 0;
     //Length check
-    if (size(start) != size(end))
+    if (start.length() != end.length())
         return false;
-    
+
     //Checking 'R' from left to right
-    for (int i = 0;i < size(start);i++)
+    for (int i = 0;i < start.length();i++)
     {
         if (start[i] == 'R')
             Rs++;
@@ -21,7 +23,7 @@ bool CanTransform(const string start,const string end)
     }
 
     //Checking 'L' from right tp left
-    for (int i = size(start) - 1;i >= 0;i--)
+    for (int i = start.length() - 1;i >= 0;i--)
     {
         if (start[i] == 'L')
             Ls++;
@@ -34,22 +36,24 @@ bool CanTransform(const string start,const string end)
     return (Rs == Re && Ls == Le) ? true : false;
 }
 
-void Explanation(string start,const string end)
+void Explanation(string start, const string end)
 {
-    cout<<"Explanation:\n"
+    cout << "Explanation:\n"
         << "We can transform start to end following these steps:\n";
     cout << start;
-    if (start != end)
-        cout << " ->\n";
-    for (int i = 0; i < size(start);i++)
+    cout << ((start == end) ? "\n" : " ->\n");
+
+    for (int i = 0; i < start.length();i++)
     {
         if (start[i] == end[i])continue;
         if (start[i] == 'R')
         {
-            swap(start[i], start[i + 1]);
-            cout << start;
-            if (start != end)
-                cout << " ->\n";
+            for (int j = start.find('X', i);j > i;j--)
+            {
+                swap(start[j], start[j - 1]);
+                cout << start;
+                cout << ((start == end) ? "\n" : " ->\n");
+            }
         }
         else//start[i]=='X', end[i+?]=='L'
         {
@@ -57,8 +61,7 @@ void Explanation(string start,const string end)
             {
                 swap(start[j], start[j - 1]);
                 cout << start;
-                if (start != end)
-                    cout << " ->\n";
+                cout << ((start == end) ? "\n" : " ->\n");
             }
 
         }
@@ -68,16 +71,18 @@ void Explanation(string start,const string end)
 int main()
 {
     string start, end;
-    cin >> start >> end;
 
-    cout << "Input: start = \"" << start << "\", end = \"" << end << "\"\n";
-    if (CanTransform(start, end))
+    while (cin >> start >> end)
     {
-        cout << "Output: True\n";
-        Explanation(start, end);
+        cout << "Input: start = \"" << start << "\", end = \"" << end << "\"\n";
+        if (CanTransform(start, end))
+        {
+            cout << "Output: True\n";
+            Explanation(start, end);
+        }
+        else
+            cout << "Output: False\n";
     }
-    else
-        cout << "Output: False\n";
 
     return 0;
 }
